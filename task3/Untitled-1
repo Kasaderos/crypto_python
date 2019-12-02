@@ -1,0 +1,83 @@
+RSAlib
+
+class RSACrypto:
+    
+    def __init__(self, pub_key (класс), sec_key(класс)): 
+
+    @property
+    def block_len - макс битовая длины блока, шифруемого криптосистемой
+
+    def encrypt(self, block "int") - int cipher_text 
+
+    def decrypt(self, block) -> int text -> возвр строку
+
+    def encrypts(self, text "str") -> bytes crypto_text
+
+    def decrypts(self, bytes) -> str
+
+    def encryptb/decryptb (self, bytes) -> bytes
+                        
+    RSA 
+    1) Алгоритм генерации ключи
+        i)   p, q случ простые числа  p != q
+        ii)  N = p * q
+        iii) phi(N) = (p-1)*(q-1) число Эйлера
+        iv)  генереция случ числа е: 1 < e < phi(N), НОД(e, phi(N)) = 1
+        v)   d = e**(-1) mod phi(N)
+        vi)  возвр (e, N) - открытый ключ, (d, N) - закрытый ключ
+    На вход: (e, N) открытый ключ, 1 <= m <= N-1 сообщение (число)
+    На выходе: c = m**(e) mod N
+
+    2) Алгоритм шифрование
+
+    3) Алгоритм расшифрование
+        Вход: секретный ключи, шифр текст
+            (d, N), (1 <= C <= N-1)
+        Выход: m = e**(d) mod N
+
+class RSAkey:
+    def __init__(self, power=None "степень (e/d)", mod=None "N")
+
+    0 < power < mod
+    
+    @property
+    def power(self)
+
+    @power.setter
+    def power(self, new_power)
+
+    @property|mod.setter
+    def mod(...)
+        powersetter(...)
+
+    def __repr__(self):
+        вывод в терминал класса
+        <имя класса>(параметр1 = знач1,...)
+        знач1=8символов,<...длина оставш...>
+
+    def __str__(self):
+        значи в строком предст
+
+    def dump/load(self, filename)
+    load иниц-ет знач
+        file_name = self.__file_name
+
+RSASec_key(RSAKey):
+    self__filename="key.sec"
+
+
+
+
+
+def is_prime(number, test_func = None, funcs_args=None)
+    return test_func(number, **args)
+
+def rabin_miller_test(number, log_precision=128)
+    True, если Pr(number-простое) >= 1 - 1/(2**log_precision)
+    False, number составное
+
+def next_prime(edge, test_func=None, func_args=None)
+def gcd(a, b)
+def power_mod(a, b, mod)
+
+a**b = A**(2**(n-1)*b_(n-1) + 2**(n-2) * b_(n-2) + .. + b_0)

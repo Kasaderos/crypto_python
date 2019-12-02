@@ -8,6 +8,7 @@ ipython = "*"
 
 [packages]
 pyyaml = "*"
+json = "*"
 
 [requires]
 python_version = "3.6"

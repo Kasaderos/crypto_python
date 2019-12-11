@@ -2,67 +2,95 @@ import random
 import sys
 
 
+EPS = 1e-6
+
+def rearrange(L):
+    n = 4
+    j = n - 2
+    while j != -1 and L[j] >= L[j+1]:
+        j -= 1
+    if j == -1:
+        return False
+    k = n - 1
+    while L[j] >= L[k]:
+        k -= 1
+    L[k], L[j] = L[j], L[k]
+    l = j + 1
+    r = n - 1
+    while l < r:
+        L[l], L[r] = L[r], L[l]
+        l += 1
+        r -= 1
+    return True
+
 def gen_key():
     with open("keygen", "w") as f:
         key = random.sample(range(256), 256)
         f.write(str(key))
     return key
 
+
 def write_file(name, text):
     with open(name, "w") as out:
         out.write(text)
 
+
 def encrypt(filename, key):
     with open(filename, "r") as f:
-        write_file("cipher", ''.join([str(chr(key[ord(ch)])) for ch in f.read()]))
+        try:
+            write_file("cipher", ''.join([str(chr(key[ord(ch)])) for ch in f.read()]))
+        except:
+            print("symbol size() > 1 byte")
+
 
 def count_bytes(text):
-    count = [0] * 256
+    count = {i : 0 for i in range(256)}
     for c in text:
         count[ord(c)] += 1
     return count
+
 
 def get_frequency(filename):
     with open(filename, "r") as f:
         text = f.read()
         count = count_bytes(text)
-        #print(count)
-        count = [i/len(text) for i in count]
-        return count
-'''
-[1, 2, 2]
-[1, 2, 2]
+        count = {k : count[k]/len(text) for k in count.keys() if count[k] != 0}
+        return count, text
 
-0:0 0:0
-1:1 1:2
-2:2 2:1
 
-EPS = 1e-6
-
-def find():
-    inds = []
-    for i in range(len(p1)):
-        if abs(p1[i] - p2[i]) >= EPS:
-            inds.append(i)
-    
 def get_possible_keys(p1, p2):
-    ind = j
-    for i in range(len(p1)):
-        if p1[i] != p2[i]:
-'''        
+    l1 = list(p1.keys())
+    l2 = list(p2.keys())
+    possible = {l1[i] : [l2[i],] for i in range(len(l1))} 
+    return possible
 
-def decrypt(filename_text, filename_cipher):
-    p1 = sorted(get_frequency(filename_cipher))
-    p2 = sorted(get_frequency(filename_text))
 
+def sortFreq(p):
+    return {k: v for k, v in sorted(p.items(), key=lambda item: item[1])}
+
+
+def decipher_by_first_key(cipher, keys):    
+    deciphered = ""
+    for ch in cipher:
+        deciphered += str(chr(keys[ord(ch)][0]))
+    print(deciphered)
+
+
+def decrypt(text, cipher):
+    p1, cipher = get_frequency(cipher)
+    p2, text = get_frequency(text)
+    p1 = sortFreq(p1)
+    p2 = sortFreq(p2)
     assert(len(p1)==len(p2))
-
-    #keys = get_possible_keys(p1, p2)
-    #write_file("possible_keys", keys)
+    keys = get_possible_keys(p1, p2)
+    write_file("possible_keys", str(keys))
+    decipher_by_first_key(cipher, keys)
 
 if __name__ == "__main__":    
     if "-g" in sys.argv and len(sys.argv) == 3:
+        # python3 proga.py -g in.txt 
         encrypt(sys.argv[2], gen_key())
     if "-d" in sys.argv and len(sys.argv) == 4:
+        # python3 proga.py -d in.txt cipher
         decrypt(sys.argv[2], sys.argv[3])
     

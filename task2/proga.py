@@ -4,25 +4,6 @@ import sys
 
 EPS = 1e-6
 
-def rearrange(L):
-    n = 4
-    j = n - 2
-    while j != -1 and L[j] >= L[j+1]:
-        j -= 1
-    if j == -1:
-        return False
-    k = n - 1
-    while L[j] >= L[k]:
-        k -= 1
-    L[k], L[j] = L[j], L[k]
-    l = j + 1
-    r = n - 1
-    while l < r:
-        L[l], L[r] = L[r], L[l]
-        l += 1
-        r -= 1
-    return True
-
 def gen_key():
     with open("keygen", "w") as f:
         key = random.sample(range(256), 256)
@@ -61,6 +42,7 @@ def get_frequency(filename):
 def get_possible_keys(p1, p2):
     l1 = list(p1.keys())
     l2 = list(p2.keys())
+    # сопоставляем
     possible = {l1[i] : [l2[i],] for i in range(len(l1))} 
     return possible
 

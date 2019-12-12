@@ -42,8 +42,7 @@ def get_frequency(filename):
 def get_possible_keys(p1, p2):
     l1 = list(p1.keys())
     l2 = list(p2.keys())
-    # сопоставляем
-    possible = {l1[i] : [l2[i],] for i in range(len(l1))} 
+    possible = {l1[i] : l2[i] for i in range(len(l1))} 
     return possible
 
 
@@ -51,10 +50,10 @@ def sortFreq(p):
     return {k: v for k, v in sorted(p.items(), key=lambda item: item[1])}
 
 
-def decipher_by_first_key(cipher, keys):    
+def print_decipher(cipher, keys):    
     deciphered = ""
     for ch in cipher:
-        deciphered += str(chr(keys[ord(ch)][0]))
+        deciphered += str(chr(keys[ord(ch)]))
     print(deciphered)
 
 
@@ -66,7 +65,7 @@ def decrypt(text, cipher):
     assert(len(p1)==len(p2))
     keys = get_possible_keys(p1, p2)
     write_file("possible_keys", str(keys))
-    decipher_by_first_key(cipher, keys)
+    print_decipher(cipher, keys)
 
 if __name__ == "__main__":    
     if "-g" in sys.argv and len(sys.argv) == 3:

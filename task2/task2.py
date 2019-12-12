@@ -46,9 +46,7 @@ def sortFreq(p):
 
 
 def write_decipher(cipher, keys):    
-    deciphered = ""
-    for ch in cipher:
-        deciphered += str(chr(keys[ord(ch)]))
+    deciphered = ''.join([str(chr(keys[ord(ch)])) for ch in cipher])
     write_file("deciphered.txt", deciphered)
 
 

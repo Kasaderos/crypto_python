@@ -1,20 +1,18 @@
 import random
 import sys
 
-
+# для сравнения чисел
 EPS = 1e-6
 
 def gen_key():
     with open("keygen", "w") as f:
         key = random.sample(range(256), 256)
-        f.write(str(key))
-    return key
+        f.write(' '.join([str(k) for k in key]))
 
 
 def write_file(name, text):
     with open(name, "w") as out:
         out.write(text)
-
 
 def encrypt(filename, key):
     with open(filename, "r") as f:
@@ -23,20 +21,17 @@ def encrypt(filename, key):
         except:
             print("symbol size() > 1 byte")
 
-
-def count_bytes(text):
-    count = {i : 0 for i in range(256)}
-    for c in text:
-        count[ord(c)] += 1
-    return count
+def get_key_from_file():
+    with open("keygen", "r") as f:
+        return [int(k) for k in f.read().split()]
 
 
 def get_frequency(filename):
     with open(filename, "r") as f:
         text = f.read()
-        count = count_bytes(text)
-        count = {k : count[k]/len(text) for k in count.keys() if count[k] != 0}
-        return count, text
+        count = {ord(ch) : text.count(ch) for ch in text}
+        freq = {k : count[k]/len(text) for k in count.keys() if count[k] != 0}
+        return freq, text
 
 
 def get_possible_keys(p1, p2):
@@ -50,11 +45,11 @@ def sortFreq(p):
     return {k: v for k, v in sorted(p.items(), key=lambda item: item[1])}
 
 
-def print_decipher(cipher, keys):    
+def write_decipher(cipher, keys):    
     deciphered = ""
     for ch in cipher:
         deciphered += str(chr(keys[ord(ch)]))
-    print(deciphered)
+    write_file("deciphered.txt", deciphered)
 
 
 def decrypt(text, cipher):
@@ -64,14 +59,20 @@ def decrypt(text, cipher):
     p2 = sortFreq(p2)
     assert(len(p1)==len(p2))
     keys = get_possible_keys(p1, p2)
-    write_file("possible_keys", str(keys))
-    print_decipher(cipher, keys)
+    write_file("possible_key", str(keys))
+    write_decipher(cipher, keys)
 
 if __name__ == "__main__":    
-    if "-g" in sys.argv and len(sys.argv) == 3:
-        # python3 proga.py -g in.txt 
-        encrypt(sys.argv[2], gen_key())
+    if "-g" in sys.argv and len(sys.argv) == 2:
+        # python3 task2.py -g 
+        # генерация и запись ключа в файл keygen
+        gen_key()
+    if "-e" in sys.argv and len(sys.argv) == 3:
+        # python3 task2.py -e in.txt
+        # шифрование по ключу keygen
+        encrypt(sys.argv[2], get_key_from_file())
     if "-d" in sys.argv and len(sys.argv) == 4:
-        # python3 proga.py -d in.txt cipher
+        # python3 task2.py -d in.txt cipher
+        # взлом и запись расшифрованного текста
         decrypt(sys.argv[2], sys.argv[3])
     
